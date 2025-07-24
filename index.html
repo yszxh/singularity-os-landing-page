@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>奇点OS：您的个人首席AI战略官</title>
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+        }
+
+        /* Utility Classes */
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 0;
+        }
+
+        .grid-2x2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .grid-2x2 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Section Base */
+        section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 0;
+        }
+
+        section .content {
+            text-align: center;
+            color: white;
+            z-index: 2;
+            position: relative;
+        }
+
+        section.bg-image {
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        section.bg-image::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5); /* Dark overlay for text readability */
+            z-index: 1;
+        }
+
+        section.bg-light {
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        section.bg-light .content {
+            color: #333;
+        }
+        section.bg-light .card {
+            background: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        /* Hero Section */
+        #hero {
+            background-image: url('assets/Hero-Background.jpeg');
+        }
+        #hero .content h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        #hero .content h3 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            font-weight: normal;
+        }
+        #hero .content p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        /* Problem Section */
+        #problem .content h2 {
+            margin-bottom: 3rem;
+            font-size: 2.5rem;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: left;
+            transition: transform 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .card h3 {
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+        .card h3::before {
+             content: "";
+             display: inline-block;
+             width: 24px;
+             height: 24px;
+             background-size: contain;
+             background-repeat: no-repeat;
+             margin-right: 10px;
+        }
+        
+        .card-knowledge-silo h3::before {
+            background-image: url('assets/Icon-KnowledgeSilo.jpeg');
+        }
+        
+        .card-goal-disconnect h3::before {
+            background-image: url('assets/Icon-GoalDisconnect.jpeg');
+        }
+        
+        .card-capability-bottleneck h3::before {
+            background-image: url('assets/Icon-CapabilityBottleneck.jpeg');
+        }
+        
+        .card-process-vacuum h3::before {
+            background-image: url('assets/Icon-ProcessVacuum.jpeg');
+        }
+        
+        .card-knowledge-base h3::before {
+            background-image: url('assets/Feature-KnowledgeBase.jpeg');
+        }
+        
+        .card-ai-director h3::before {
+            background-image: url('assets/Feature-AI-Director.jpeg');
+        }
+        
+        .card-ai-team h3::before {
+            background-image: url('assets/Feature-AI-Team.jpeg');
+        }
+        
+        .card-sop-playbook h3::before {
+            background-image: url('assets/Feature-SOP-Playbook.jpeg');
+        }
+        .card p {
+            font-size: 0.9rem;
+            opacity: 0.85;
+        }
+
+        /* Value Props Section */
+        #value-props-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .value-prop-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            z-index: 1; /* All slides are on a lower layer */
+            transition: opacity 0.7s ease-in-out;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .value-prop-slide::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.4); /* Dark overlay for text readability */
+            z-index: 1; /* Sits on top of the background image */
+        }
+
+        .value-prop-slide.active {
+            opacity: 1;
+            z-index: 2; /* Active slide is on a higher layer */
+        }
+        
+        .value-prop-slide .content {
+             display: flex;
+             flex-direction: column;
+             justify-content: center;
+             align-items: center;
+             height: 100%;
+             padding: 2rem;
+             text-align: center;
+             position: relative; /* For z-index to work */
+             z-index: 2; /* Above the ::before overlay */
+        }
+
+        .value-prop-slide h3 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: white;
+        }
+        .value-prop-slide p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            color: white;
+            opacity: 0.9;
+        }
+        #value-props-1 { background-image: url('assets/Value-KnowledgeToAction.jpeg'); }
+        #value-props-2 { background-image: url('assets/Value-ChaosToOrder.jpeg'); }
+        #value-props-3 { background-image: url('assets/Value-IndividualToTeam.jpeg'); }
+
+        .carousel-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.2);
+            border: none;
+            color: white;
+            font-size: 3rem;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 0 1rem;
+            z-index: 10;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            height: 100px;
+            border-radius: 10px;
+        }
+
+        #value-props-container:hover .carousel-button {
+            opacity: 0.7;
+        }
+
+        .carousel-button:hover {
+            background: rgba(0, 0, 0, 0.5);
+            opacity: 1;
+        }
+
+        .carousel-button.prev {
+            left: 1rem;
+        }
+
+        .carousel-button.next {
+            right: 1rem;
+        }
+        
+        /* How It Works Section */
+        #how-it-works .content h2 {
+            margin-bottom: 3rem;
+            font-size: 2.5rem;
+        }
+
+        /* CTA Section */
+        #cta {
+            background-image: url('assets/CTA-Background.jpeg');
+        }
+        #cta .content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+        }
+        #cta .content h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        #cta .cta-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+            width: 100%;
+        }
+        .cta-text, .cta-form {
+            flex: 1;
+            min-width: 300px;
+        }
+        .cta-text p, .cta-text ul {
+            text-align: left;
+            margin-bottom: 1rem;
+        }
+        .cta-text ul {
+            list-style: none;
+        }
+        .cta-text ul li::before {
+            content: "•";
+            color: #007bff;
+            display: inline-block;
+            width: 1em;
+            margin-left: -1em;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .btn {
+            background-color: #007bff;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        .qr-code {
+            margin-top: 1rem;
+        }
+        .qr-code img {
+            width: 150px;
+            height: auto;
+            border-radius: 8px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Hero Section -->
+    <section id="hero" class="bg-image">
+        <div class="content">
+            <h1>奇点OS</h1>
+            <h3>您的个人首席AI战略官</h3>
+            <p>别再管理文件了，开始管理您的战略。</p>
+        </div>
+    </section>
+
+    <!-- Problem Section -->
+    <section id="problem" class="bg-light">
+        <div class="container">
+            <div class="content">
+                <h2>您是否正陷入“高努力，低回报”的困境？</h2>
+                <div class="grid-2x2">
+                    <div class="card card-knowledge-silo">
+                        <h3>信息过载，知识孤岛</h3>
+                        <p>关键的客户需求淹没在微信聊天记录里，重要的项目资料散落在飞书文档中，核心的财务数据存储于本地文件夹，而那些宝贵的行业洞察则躺在某个公众号文章里。</p>
+                    </div>
+                    <div class="card card-goal-disconnect">
+                        <h3>目标与执行脱节</h3>
+                        <p>您在年初制定了宏伟的年度目标（OKR），但在日复一日的琐碎任务中，战略被逐渐遗忘、稀释、甚至扭曲。</p>
+                    </div>
+                    <div class="card card-capability-bottleneck">
+                        <h3>能力瓶颈，单点故障</h3>
+                        <p>作为创始人、团队核心或关键决策者，您的精力是公司最宝贵也最稀缺的资源。您是战略专家，但您可能不是顶尖的设计师、不是资深的程序员，也不是专业的数据分析师。</p>
+                    </div>
+                    <div class="card card-process-vacuum">
+                        <h3>流程缺失，重复造轮</h3>
+                        <p>一次成功的营销活动、一个高效的项目管理流程，这些宝贵的经验往往随着项目的结束而流失。团队的每一次新探索，都像是在黑暗中摸索，重复着前人犯过的错误。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Core Value Proposition Section -->
+    <section id="value-props-container">
+        <div id="value-props-1" class="value-prop-slide">
+            <div class="content">
+                <h3>不仅仅是存储信息，我们驱动信息产生价值。</h3>
+                <p>从一篇报告到一个可执行的方案，想法到行动，从未如此流畅。</p>
+            </div>
+        </div>
+        <div id="value-props-2" class="value-prop-slide">
+            <div class="content">
+                <h3>用“战略意图”组织信息，而非“文件类型”。</h3>
+                <p>您无需整理，系统自会归位。您的数字世界，第一次拥有了真正的秩序。</p>
+            </div>
+        </div>
+        <div id="value-props-3" class="value-prop-slide">
+            <div class="content">
+                <h3>让您不再是一个人战斗，瞬间拥有一个全能的虚拟执行部门。</h3>
+                <p>这不仅是效率的提升，这是能力的指数级放大。</p>
+            </div>
+        </div>
+        <!-- Carousel Buttons -->
+        <button id="prevBtn" class="carousel-button prev"><</button>
+        <button id="nextBtn" class="carousel-button next">></button>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="bg-light">
+        <div class="container">
+            <div class="content">
+                <h2>揭秘您的AI战略官如何工作</h2>
+                <div class="grid-2x2">
+                    <div class="card card-knowledge-base">
+                        <h3>结构化知识库</h3>
+                        <p><strong>Benefit:</strong> "告别混乱，一切井然有序。"</p>
+                    </div>
+                    <div class="card card-ai-director">
+                        <h3>首席智能助理</h3>
+                        <p><strong>Benefit:</strong> "您只需聚焦'做什么'，AI负责'怎么做'。"</p>
+                    </div>
+                    <div class="card card-ai-team">
+                        <h3>专业AI执行团队</h3>
+                        <p><strong>Benefit:</strong> "一夜之间，拥有一个全能执行团队。"</p>
+                    </div>
+                    <div class="card card-sop-playbook">
+                        <h3>SOP与方法论沉淀</h3>
+                        <p><strong>Benefit:</strong> "让每一次成功，都成为下一次成功的起点。"</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section id="cta" class="bg-image">
+        <div class="content">
+            <h2>是时候，为您的雄心，配备一个匹配的操作系统了！</h2>
+            <div class="cta-content">
+                <div class="cta-text">
+                    <p><strong>理想客户:</strong></p>
+                    <ul>
+                        <li>雄心勃勃的创始人与CEO</li>
+                        <li>高影响力合伙人/高管</li>
+                        <li>追求卓越的知识工作者/独立顾问</li>
+                    </ul>
+                    <p><strong>服务套餐:</strong> 专业版 | 团队版 | 企业版</p>
+                    <div class="qr-code">
+                        <p>开启您的战略进化之旅</p>
+                        <img src="assets/wechat-qrcode.jpg" alt="老邹个人微信二维码">
+                    </div>
+                </div>
+                <div class="cta-form">
+                    <form action="mailto:ysdszxh@gmail.com" method="post" enctype="text/plain">
+                        <div class="form-group">
+                            <label for="name">姓名 *</label>
+                            <input type="text" id="name" name="姓名" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="company">公司</label>
+                            <input type="text" id="company" name="公司">
+                        </div>
+                        <div class="form-group">
+                            <label for="position">职位</label>
+                            <input type="text" id="position" name="职位">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">联系方式 *</label>
+                            <input type="email" id="email" name="联系方式" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="bottleneck">您当前在工作中最希望解决的效率瓶颈是什么？ *</label>
+                            <textarea id="bottleneck" name="效率瓶颈" rows="4" required></textarea>
+                        </div>
+                        <button type="submit" class="btn">提交申请</button>
+                        <p style="font-size: 0.8rem; margin-top: 1rem;">您的需求将由广州粤尚信息科技有限公司提供服务。</p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- JavaScript for Value Props Carousel -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let currentIndex = 0;
+            const slides = document.querySelectorAll('.value-prop-slide');
+            const totalSlides = slides.length;
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            let autoSlideInterval;
+
+            function updateCarousel() {
+                if (totalSlides === 0) return;
+                slides.forEach((slide, index) => {
+                    slide.classList.remove('active');
+                });
+                slides[currentIndex].classList.add('active');
+            }
+
+            function showNext() {
+                currentIndex = (currentIndex + 1) % totalSlides;
+                updateCarousel();
+            }
+
+            function showPrev() {
+                currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
+                updateCarousel();
+            }
+
+            function startAutoSlide() {
+                // Clear any existing interval
+                clearInterval(autoSlideInterval);
+                autoSlideInterval = setInterval(showNext, 5000);
+            }
+
+            // Event Listeners
+            if(prevBtn && nextBtn && totalSlides > 0) {
+                nextBtn.addEventListener('click', () => {
+                    showNext();
+                    startAutoSlide(); // Restart timer on manual click
+                });
+
+                prevBtn.addEventListener('click', () => {
+                    showPrev();
+                    startAutoSlide(); // Restart timer on manual click
+                });
+                
+                // Initial setup
+                updateCarousel(); // Show the first slide
+                startAutoSlide();
+            }
+        });
+    </script>
+
+</body>
+</html>
